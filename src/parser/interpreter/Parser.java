@@ -1,4 +1,4 @@
-package parser;
+package parser.interpreter;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -183,9 +183,8 @@ public class Parser {
 	private Expr postfix(Scope scope) throws ParserException, IOException, TokenizerException {
 		Expr expr = primary(scope);
 		
-		while(isType(Type.OPAREN)) {
+		while(isType(Type.OPAREN))
 			expr = new InvokeExpr(expr, args(scope));
-		}
 		
 		return expr;
 	}
@@ -241,31 +240,80 @@ public class Parser {
 	}
 	
 	private Expr getNumber(Scope scope) {
+		return new NumVal(actual.getValue());
     }
 
-    private Expr getBoolean(Scope scope) {
+    private Expr getBoolean(Scope scope) throws ParserException {
+    	if(isType(Type.TRUE))
+    		return new BoolVal(true);
+    	else
+    		return new BoolVal(false);
     }
 
     private Expr getNil(Scope scope) {
+    	return new NilVal();
     }
 
     private Expr getString(Scope scope) {
+    	return new StringVal(actual.getTextValue());
     }
 
-    private Expr getId(Scope scope) {
+    private Expr getId(Scope scope) throws ParserException {
+    	scope.checkId(actual);
+    	//TODO;
+    	return null;
     }
 
-    private Expr getIf(Scope scope) {
+    private Expr getIf(Scope scope) throws ParserException, IOException, TokenizerException {
+    	Expr first, second = null;
+    	Type operator = actual.getType();
+    	next();
+    	Expr condition = sequence(scope);
+    	next();
+    	checkType(Type.THEN);
+    	next();
+    	first = sequence(scope);
+    	next();
+    	if(isType(Type.ELSE)) {
+    		next();
+    		second = sequence(scope);
+    	}
+    	next();
+    	checkType(Type.FI);
+    	return new IfExpr(condition, operator, first, second);
     }
 
-    private Expr getWhile(Scope scope) {
+    private Expr getWhile(Scope scope) throws ParserException, IOException, TokenizerException {
+    	Expr operation = null;
+    	Type operator = actual.getType();
+    	next();
+    	Expr condition = sequence(scope);
+    	next();
+    	if(isType(Type.DO)) {
+    		next();
+    		operation = sequence(scope);
+    	}
+    	next();
+    	checkType(Type.OD);
+    	return new WhileExpr(operator, condition, operation);
     }
 
-    private Expr getPrint(Scope scope) {
+    private Expr getPrint(Scope scope) throws IOException, TokenizerException, ParserException {
+    	Type operator = actual.getType();
+    	next();
+    	ExprList exprList = args(scope);
+    	return new PrintExpr(operator, exprList);
     }
 
-    private Expr getSubSequence(Scope scope) {
-}
+    private Expr getSubSequence(Scope scope) throws ParserException, IOException, TokenizerException {
+    	next();
+    	checkType(Type.OPAREN);
+    	next();
+    	Expr expr = sequence(scope);
+    	next();
+    	checkType(Type.OPAREN);
+    	return expr;
+    }
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -276,10 +324,6 @@ public class Parser {
 	
 	private void previus() {
 		actual = tokenizer.prev(actual);
-	}
-	
-	private boolean isText(String val) throws IOException, TokenizerException {
-		return actual.getTextValue().equals(val);
 	}
 	
 	private boolean isType(Type t) throws ParserException {
@@ -307,11 +351,6 @@ public class Parser {
 				return true;
 			default: return false;
 		}
-	}
-	
-	private void checkText(String val) throws ParserException, IOException, TokenizerException {
-		if(!actual.getTextValue().equals(val))
-			throw new ParserException("ParserException: expected value: "+val+" not found");
 	}
 	
 	private void checkType(Type t) throws ParserException {
