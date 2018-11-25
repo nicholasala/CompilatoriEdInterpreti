@@ -1,5 +1,11 @@
 package parser.interpreter;
 
-public class NilVal extends Val{
+import exception.InterpreterException;
 
+public class NilVal extends Val{
+	
+	@Override
+	protected NilVal checkNil() throws InterpreterException{
+		return this;
+	}
 }

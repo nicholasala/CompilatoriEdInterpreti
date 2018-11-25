@@ -2,18 +2,24 @@ package parser.interpreter;
 
 import java.util.List;
 
+import exception.InterpreterException;
+
 public class ClosureVal extends Val{
+	private final Env env;
+	private final FunExpr funExpr;
 	
-	ClosureVal(Env env, Val val){
-		
+	ClosureVal(Env env, FunExpr funExpr){
+		this.env = env;
+		this.funExpr = funExpr;
 	}
 	
-	ClosureVal(Env env, Expr Expr){
-		
-	}
+	Val apply(List<Val> argVals) throws InterpreterException {
+        return funExpr.code().eval(
+            new Env(new Frame(funExpr.params(), funExpr.locals(), argVals), env));
+    }
 	
-	//Val apply(List<Val> argVals) {
-      //  return funExpr.code().eval(
-        //    new Env(new Frame(funExpr.params(), funExpr.locals(), argVals), env));
-    //}
+	@Override
+	protected ClosureVal checkClosure() throws InterpreterException{
+		throw new InterpreterException(this + " Is not a Closure");
+	}
 }

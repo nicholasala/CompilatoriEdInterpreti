@@ -8,12 +8,6 @@ import tokenizer.*;
 import exception.*;
 
 public class Parser {
-	//portarsi in giro i nomi esterni per poter controllare che i nomi vengano usati in modo appropriato
-	//una variabile scope, che cresce con i nomi delle variabili dichiarate prima di entrare in un blocco 
-	//uno scope è qualcosa che ha dei nomi e lo scope circostante (variabili del blocco superiore), è fatto a nodi ogni nodo ha le sue variabili 
-	//uile per differenziare i nomi in base a dove verranno utilizzati
-	//passando lo scope di funzione in funzione quando esco da uno scope, non devo fare niente 
-	//scope.checkInScope(id)
 	private Tokenizer tokenizer;
 	private Token actual = null;
 	
@@ -260,8 +254,7 @@ public class Parser {
 
     private Expr getId(Scope scope) throws ParserException {
     	scope.checkId(actual);
-    	//TODO;
-    	return null;
+    	return new GetVarExpr(actual.getTextValue());
     }
 
     private Expr getIf(Scope scope) throws ParserException, IOException, TokenizerException {

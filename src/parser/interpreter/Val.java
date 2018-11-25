@@ -4,27 +4,27 @@ import exception.InterpreterException;
 
 public class Val extends Expr{
 	
-	Val eval(Env env) {
+	Val eval(Env env) throws InterpreterException{
         return this;
     }
 	
-	private void checkBool() throws InterpreterException{
-		if(!(this instanceof BoolVal))
-			throw new InterpreterException(this + " Is not a bool");
+	protected BoolVal checkBool() throws InterpreterException{
+		throw new InterpreterException(this + " Is not a bool");
 	}
 	
-	private void checkNum() throws InterpreterException{
-		if(!(this instanceof NumVal))
-			throw new InterpreterException(this + " Is not a bool");
+	protected NumVal checkNum() throws InterpreterException{
+			throw new InterpreterException(this + " Is not a num");
 	}
 	
-	private void checkString() throws InterpreterException{
-		if(!(this instanceof StringVal))
-			throw new InterpreterException(this + " Is not a bool");
+	protected StringVal checkString() throws InterpreterException{
+		throw new InterpreterException(this + " Is not a string");
 	}
 	
-	private void checkNil() throws InterpreterException{
-		if(!(this instanceof NilVal))
-			throw new InterpreterException(this + " Is not a bool");
+	protected NilVal checkNil() throws InterpreterException{
+		throw new InterpreterException(this + " Is not a nil");
+	}
+	
+	protected ClosureVal checkClosure() throws InterpreterException{
+		throw new InterpreterException(this + " Is not a Closure");
 	}
 }

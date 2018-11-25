@@ -1,20 +1,19 @@
 package parser.interpreter;
 
+import exception.InterpreterException;
+
 public class InvokeExpr extends Expr{
-	//private final Expr expr;
-	//private final ExprList args;
+	private final Expr expr;
+	private final ExprList args;
 	
-	InvokeExpr(Expr Expr, ExprList list ){
-		
+	InvokeExpr(Expr expr, ExprList args ){
+		this.expr = expr;
+		this.args = args;
 	}
 
 	@Override
-	Val eval(Env env) {
-		// TODO Auto-generated method stub
-		return null;
+	Val eval(Env env) throws InterpreterException {
+		return expr.eval(env).checkClosure().apply(args.eval(env));
 	}
 	
-	//Val eval(Env env){
-		//return expr.eval(env).checkClousure().apply(args.eval(env));
-	//}
 }
