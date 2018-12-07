@@ -1,16 +1,31 @@
 package parser.interpreter;
 
+import exception.InterpreterException;
+
 public class Env {
 	//ambiente circostante 
 	private final Env enclosing;
 	private final Frame frame;
 	
 	Env(Frame frame, Env env){
-		this.enclosing = null;
-		this.frame = null;
+		this.frame = frame;
+		this.enclosing = env;
 	}
 	
-	//implementare metodi per ricerca/ottenimento valore
+	public Val getValue(String id) {
+		Val value = frame.getValue(id);
+		if(value != null)
+			return value;
+		else
+			return enclosing.getValue(id);
+	}
+	
+	public void setValue(String id, Val value) throws InterpreterException {
+		if(frame.exist(id))
+			frame.setValue(id, value);
+		else
+			enclosing.setValue(id, value);
+	}
 }
 
 /*

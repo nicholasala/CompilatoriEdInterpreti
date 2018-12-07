@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import exception.InterpreterException;
+
 public class ExprList{
 	private final List<Expr> list;
 	
@@ -15,8 +17,13 @@ public class ExprList{
 		list.add(expr);
 	}
 
-	public List<Val> eval(Env env){
-		return list.stream().map(expr -> expr.eval(env)).collect(Collectors.toList());
+	public List<Val> eval(Env env) throws InterpreterException{
+		return list.stream().map(expr -> {
+			try {
+				return expr.eval(env);
+			} catch (InterpreterException e) { e.printStackTrace(); }
+			return null;
+		}).collect(Collectors.toList());
 	}
 
 }

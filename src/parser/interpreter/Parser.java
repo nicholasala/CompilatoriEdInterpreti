@@ -238,10 +238,7 @@ public class Parser {
     }
 
     private Expr getBoolean(Scope scope) throws ParserException {
-    	if(isType(Type.TRUE))
-    		return new BoolVal(true);
-    	else
-    		return new BoolVal(false);
+    	return new BoolVal(actual.getType());
     }
 
     private Expr getNil(Scope scope) {

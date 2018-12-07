@@ -9,6 +9,10 @@ public class NumVal extends Val{
 		this.value = value;
 	}
 	
+	public int getValue() {
+		return value;
+	}
+	
 	@Override
 	protected NumVal checkNum() throws InterpreterException{
 		return this;

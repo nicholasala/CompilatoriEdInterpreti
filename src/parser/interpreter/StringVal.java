@@ -9,6 +9,10 @@ public class StringVal extends Val{
 		this.value = value;
 	}
 	
+	public String getValue() {
+		return value;
+	}
+	
 	@Override
 	protected StringVal checkString() throws InterpreterException{
 		return this;
