@@ -21,4 +21,9 @@ public class BoolVal extends Val{
 	protected BoolVal checkBool() throws InterpreterException{
 		return this;
 	}
+	
+	@Override
+	public String toString() {
+		return String.valueOf(value);
+	}
 }

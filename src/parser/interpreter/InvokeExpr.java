@@ -12,7 +12,7 @@ public class InvokeExpr extends Expr{
 	}
 
 	@Override
-	Val eval(Env env) throws InterpreterException {
+	public Val eval(Env env) throws InterpreterException {
 		return expr.eval(env).checkClosure().apply(args.eval(env));
 	}
 	

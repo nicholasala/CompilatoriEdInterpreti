@@ -12,7 +12,7 @@ public class SetVarExpr extends Expr{
 	}
 
 	@Override
-	Val eval(Env env) {
+	public Val eval(Env env) {
 		// TODO Auto-generated method stub
 		return null;
 	}

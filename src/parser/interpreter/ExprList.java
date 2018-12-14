@@ -21,8 +21,9 @@ public class ExprList{
 		return list.stream().map(expr -> {
 			try {
 				return expr.eval(env);
-			} catch (InterpreterException e) { e.printStackTrace(); }
-			return null;
+			} catch (InterpreterException e) {
+				return new NilVal(); 
+			}
 		}).collect(Collectors.toList());
 	}
 

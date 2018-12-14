@@ -1,5 +1,7 @@
 
-
+{ ->
+	print("ci siamo");
+}
 
 
 
@@ -13,7 +15,7 @@
 */
 
 
-
+/*
 {_true _false _if ->
     _true = {(t f) -> t};
     _false = {(t f) -> f};
@@ -21,6 +23,7 @@
     
     println(_if(_true, {-> while true do {} od}, {-> "False"}))
 }
+*/
 
 
 /*
@@ -46,7 +49,7 @@
 
 
 
-
+/*
 {coin change ->
     coin = {(index) ->
         if index == 0
@@ -83,7 +86,7 @@
     };
     
     println(change(50, 0))
-}
+}*/
 
 
 

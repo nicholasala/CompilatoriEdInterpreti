@@ -4,7 +4,7 @@ import exception.InterpreterException;
 
 public class Val extends Expr{
 	
-	Val eval(Env env) throws InterpreterException{
+	public Val eval(Env env) throws InterpreterException{
         return this;
     }
 	

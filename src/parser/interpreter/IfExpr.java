@@ -26,15 +26,15 @@ public class IfExpr extends Expr{
 	}
 
 	@Override
-	Val eval(Env env) throws InterpreterException {
+	public Val eval(Env env) throws InterpreterException {
 		BoolVal valued = condition.eval(env).checkBool();
 		
 		if((valued.getValue() && operator == Type.IF) || (!valued.getValue() && operator == Type.IFNOT))
-			return first.eval(env);
+			first.eval(env);
 		else if(second != null)
-			return second.eval(env);
-		else
-			return new NilVal();
+			second.eval(env);
+		
+		return new NilVal();
 	}
 
 }

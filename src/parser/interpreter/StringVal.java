@@ -17,4 +17,9 @@ public class StringVal extends Val{
 	protected StringVal checkString() throws InterpreterException{
 		return this;
 	}
+	
+	@Override
+	public String toString() {
+		return value;
+	}
 }

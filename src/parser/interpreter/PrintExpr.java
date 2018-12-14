@@ -13,13 +13,12 @@ public class PrintExpr extends Expr{
 	}
 
 	@Override
-	Val eval(Env env) throws InterpreterException {
-		StringBuilder sb = new StringBuilder();
-		if(operator == Type.PRINTLN)
-			sb.append("\n");
-		
+	public Val eval(Env env) throws InterpreterException {
 		for(Val v : args.eval(env))
-			sb.append(v.)
+			System.out.print(v.toString());
+			
+		if(operator == Type.PRINTLN)
+			System.out.print("\n");
 			
 		return new NilVal();
 	}

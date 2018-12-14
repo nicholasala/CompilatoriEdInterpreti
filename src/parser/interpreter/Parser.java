@@ -11,7 +11,7 @@ public class Parser {
 	private Tokenizer tokenizer;
 	private Token actual = null;
 	
-	Parser(StringReader reader) throws IOException{
+	public Parser(StringReader reader) throws IOException{
 		tokenizer = new Tokenizer(reader);
 	}
 	
@@ -102,7 +102,7 @@ public class Parser {
 	
 	private Expr logicalOr(Scope scope) throws IOException, TokenizerException, ParserException {
 		Expr expr = logicalAnd(scope);
-		next();
+		next(); //no next()
 		if(isType(Type.OR)) {
 			next();
 			expr = new IfExpr(expr, Type.OR, logicalOr(scope));
@@ -122,7 +122,7 @@ public class Parser {
 	
 	private Expr equality(Scope scope) throws ParserException, IOException, TokenizerException {
 		Expr expr = comparison(scope);
-		next();
+		next(); //no next
 		if(isType(Type.EQEQ) | isType(Type.NOTEQ)) {
 			Type operation = actual.getType();
 			next();
@@ -133,7 +133,7 @@ public class Parser {
 	
 	private Expr comparison(Scope scope) throws ParserException, IOException, TokenizerException {
 		Expr expr = add(scope);
-		next();
+		next(); //no next
 		if(isType(Type.LEFTTAG) | isType(Type.LEFTEQUALSTAG) | isType(Type.RIGHTTAG) | isType(Type.RIGHTEQUALSTAG)) {
 			Type operation = actual.getType();
 			next();
@@ -144,7 +144,7 @@ public class Parser {
 	
 	private Expr add(Scope scope) throws ParserException, IOException, TokenizerException {
 		Expr expr = mult(scope);
-		next();
+		next(); //no next
 		while(isType(Type.PLUS) | isType(Type.MINUS)) {
 			Type operation = actual.getType();
 			next();
@@ -155,7 +155,7 @@ public class Parser {
 	
 	private Expr mult(Scope scope) throws ParserException, IOException, TokenizerException {
 		Expr expr = unary(scope);
-		next();
+		next(); //no next
 		while(isType(Type.STAR) | isType(Type.SLASH) | isType(Type.MOD)) {
 			Type operation = actual.getType();
 			next();
@@ -197,7 +197,7 @@ public class Parser {
 			next();
 			list.add(sequence(scope));
 		}
-		
+		System.out.println("Controllo cparen, ho effettivamente: "+actual.getType()+" ;)");
 		checkType(Type.CPAREN);
 		return list;
 	}
@@ -245,7 +245,7 @@ public class Parser {
     	return new NilVal();
     }
 
-    private Expr getString(Scope scope) {
+    private Expr getString(Scope scope) { //probabile next dopo il ritorno ?
     	return new StringVal(actual.getTextValue());
     }
 

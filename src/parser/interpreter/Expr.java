@@ -2,8 +2,8 @@ package parser.interpreter;
 
 import exception.InterpreterException;
 
-abstract class Expr {
-	abstract Val eval(Env env) throws InterpreterException;
+public abstract class Expr {
+	public abstract Val eval(Env env) throws InterpreterException;
 }
 
 
