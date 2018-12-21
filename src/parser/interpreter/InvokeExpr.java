@@ -6,7 +6,7 @@ public class InvokeExpr extends Expr{
 	private final Expr expr;
 	private final ExprList args;
 	
-	InvokeExpr(Expr expr, ExprList args ){
+	public InvokeExpr(Expr expr, ExprList args ){
 		this.expr = expr;
 		this.args = args;
 	}

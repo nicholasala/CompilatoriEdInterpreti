@@ -2,7 +2,7 @@ package parser.interpreter;
 
 import exception.InterpreterException;
 import tokenizer.Type;
-
+//TODO singleton
 public class BoolVal extends Val{
 	private final boolean value;
 	

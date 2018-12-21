@@ -9,8 +9,7 @@ public class GetVarExpr extends Expr{
 
 	@Override
 	public Val eval(Env env) {
-		// TODO Auto-generated method stub
-		return null;
+		return env.getValue(id);
 	}
 
 }

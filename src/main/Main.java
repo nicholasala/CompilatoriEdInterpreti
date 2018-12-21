@@ -7,21 +7,19 @@ import java.nio.file.Paths;
 
 import exception.ParserException;
 import exception.TokenizerException;
+import parser.interpreter.Env;
 import parser.interpreter.Expr;
+import parser.interpreter.ExprList;
+import parser.interpreter.Frame;
+import parser.interpreter.InvokeExpr;
 import parser.interpreter.Parser;
 import tokenizer.Tokenizer;
 
 public class Main {
 	//Prima si impara a non ruttare a tavola e poi si puo anche ruttare
 	public static void main(String[] args) throws IOException, TokenizerException, ParserException {
-		/*
-		 * { ->
-			print("ci siamo");
-			}
-		 * 
-		 */
 		
-		
+		//TODO input streamreader
 		byte[] data = Files.readAllBytes(Paths.get(System.getProperty("user.dir") + "/funny.txt"));
 		Tokenizer t = new Tokenizer(new StringReader(new String(data)));
 		
@@ -33,7 +31,11 @@ public class Main {
 		
 		Parser parser = new Parser(new StringReader(new String(data)));
 		Expr program = parser.program();
-	    //program.eval(env);
+	    InvokeExpr invoke = new InvokeExpr(program, new ExprList());
+	    //invoke.eval();
 	}
-
 }
+
+//creare una classe launcher che chiama l'invoke senza argomenti (invoke expr)
+//tutti i compilatori utilizzano indici, invece che un hash map chiave valore, potremo utilizzare
+//un array

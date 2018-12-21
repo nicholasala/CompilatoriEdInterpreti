@@ -9,7 +9,7 @@ import exception.InterpreterException;
 public class ExprList{
 	private final List<Expr> list;
 	
-	ExprList(){
+	public ExprList(){
 		list = new ArrayList<Expr>();
 	}
 	
@@ -17,14 +17,21 @@ public class ExprList{
 		list.add(expr);
 	}
 
+	//TODO rivedere con uno stream
 	public List<Val> eval(Env env) throws InterpreterException{
-		return list.stream().map(expr -> {
+		/*return list.stream().map(expr -> {
 			try {
 				return expr.eval(env);
 			} catch (InterpreterException e) {
-				return new NilVal(); 
+				return NilVal.nil; 
 			}
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toList());*/
+		ArrayList<Val> ret = new ArrayList<Val>();
+		
+		for(Expr e : list)
+			ret.add(e.eval(env));
+		
+		return ret;
 	}
 
 }

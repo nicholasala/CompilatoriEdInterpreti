@@ -28,13 +28,13 @@ public class IfExpr extends Expr{
 	@Override
 	public Val eval(Env env) throws InterpreterException {
 		BoolVal valued = condition.eval(env).checkBool();
-		
+		//TODO aggiungere estensione per più condizioni separate da or o da and
 		if((valued.getValue() && operator == Type.IF) || (!valued.getValue() && operator == Type.IFNOT))
 			first.eval(env);
 		else if(second != null)
 			second.eval(env);
 		
-		return new NilVal();
+		return NilVal.nil;
 	}
 
 }

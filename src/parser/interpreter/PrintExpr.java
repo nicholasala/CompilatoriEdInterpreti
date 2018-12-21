@@ -16,11 +16,11 @@ public class PrintExpr extends Expr{
 	public Val eval(Env env) throws InterpreterException {
 		for(Val v : args.eval(env))
 			System.out.print(v.toString());
-			
+		
 		if(operator == Type.PRINTLN)
-			System.out.print("\n");
+			System.out.print(System.lineSeparator());
 			
-		return new NilVal();
+		return NilVal.nil;
 	}
 
 }

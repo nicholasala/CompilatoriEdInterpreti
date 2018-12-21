@@ -14,7 +14,7 @@ public class Frame {
 			bindings.put(params.get(i), argvals.get(i));
 		
 		for(String s : locals)
-			bindings.put(s, new NilVal());
+			bindings.put(s, NilVal.nil);
 	}
 	
 	public Val getValue(String id){

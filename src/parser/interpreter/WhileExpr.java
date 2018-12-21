@@ -8,7 +8,6 @@ public class WhileExpr extends Expr{
 	private Expr condition;
 	private Expr operation;
 	
-	//if operation == null -> while vuoto
 	WhileExpr(Type operator, Expr condition, Expr operation){
 		this.operator = operator;
 		this.condition = condition;
@@ -23,6 +22,6 @@ public class WhileExpr extends Expr{
 			operation.eval(env);
 		}
 		
-		return new NilVal();
+		return NilVal.nil;
 	}
 }

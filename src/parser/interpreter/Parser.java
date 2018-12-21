@@ -16,29 +16,29 @@ public class Parser {
 	}
 	
 	public Expr program() throws ParserException, IOException, TokenizerException {
-		Expr ret = function(null);
+		Expr ret = function(new Scope());
+		next();
 		checkEOS();
 		return ret;
 	}
 
 	private Expr function(Scope scope) throws ParserException, IOException, TokenizerException {
 		next();
-		//{ check
+		
 		checkType(Type.OBRACES);
+		next();
 		scope = new Scope(optParams(scope), optLocals(scope));
 		Expr expr = optSequence(scope);
-		next();
-		//} check
+		
 		checkType(Type.CBRACES);
 		return expr;
 	}
 
 	private ArrayList<String> optParams(Scope scope) throws ParserException, IOException, TokenizerException {
-		next();
 		ArrayList<String> ids = new ArrayList<String>();
 		if(isType(Type.OPAREN)) {
-			ids.addAll(optIds(scope));
 			next();
+			ids.addAll(optIds(scope));
 			checkType(Type.CPAREN);
 		}else {
 			ids.addAll(optIds(scope));
@@ -61,7 +61,8 @@ public class Parser {
 	private ArrayList<String> optIds(Scope scope) throws ParserException, IOException, TokenizerException {
 		ArrayList<String> ids = new ArrayList<String>();
 		while(isType(Type.ID)) {
-			scope.checkId(actual);
+			if(ids.contains(actual.getType().toString()))
+				throw new ParserException("ParserException: repeated key declaration");
 			ids.add(actual.getTextValue());
 			next();
 		}
@@ -73,8 +74,11 @@ public class Parser {
 		
 		while(isType(Type.SEMICOLON)) {
 			next();
-			expr = new SeqExpr(expr, optAssignment(scope));
+			expr = new SeqExpr(expr, optAssignment(scope));	
 		}
+		
+		if(actual.getType() != Type.CBRACES)
+			next();
 		return expr;
 	}
 	
@@ -82,15 +86,15 @@ public class Parser {
 		return isInFirstOfAssignment() ? assignment(scope) : null;
 	}		
 
+	//nel caso di una subsequence, ci ritroviamo al check nello scope senza aver prima aggiunto le variabili allo scope
 	private Expr assignment(Scope scope) throws ParserException, IOException, TokenizerException {
 		if(isType(Type.ID)) {
 			scope.checkId(actual);
 			String id = actual.getTextValue();
 			next();
 			if(isAssignmentOperator()) {
-				Type operator = actual.getType();
 				next();
-				return new SetVarExpr(id, operator, assignment(scope));
+				return new SetVarExpr(id, assignment(scope));
 			}else {
 				previus();
 				return logicalOr(scope);
@@ -102,7 +106,7 @@ public class Parser {
 	
 	private Expr logicalOr(Scope scope) throws IOException, TokenizerException, ParserException {
 		Expr expr = logicalAnd(scope);
-		next(); //no next()
+		
 		if(isType(Type.OR)) {
 			next();
 			expr = new IfExpr(expr, Type.OR, logicalOr(scope));
@@ -112,7 +116,7 @@ public class Parser {
 	
 	private Expr logicalAnd(Scope scope) throws ParserException, IOException, TokenizerException {
 		Expr expr = equality(scope);
-		next();
+		
 		if(isType(Type.AND)) {
 			next();
 			expr = new IfExpr(expr, Type.AND, logicalAnd(scope));
@@ -122,7 +126,7 @@ public class Parser {
 	
 	private Expr equality(Scope scope) throws ParserException, IOException, TokenizerException {
 		Expr expr = comparison(scope);
-		next(); //no next
+		
 		if(isType(Type.EQEQ) | isType(Type.NOTEQ)) {
 			Type operation = actual.getType();
 			next();
@@ -133,7 +137,7 @@ public class Parser {
 	
 	private Expr comparison(Scope scope) throws ParserException, IOException, TokenizerException {
 		Expr expr = add(scope);
-		next(); //no next
+		
 		if(isType(Type.LEFTTAG) | isType(Type.LEFTEQUALSTAG) | isType(Type.RIGHTTAG) | isType(Type.RIGHTEQUALSTAG)) {
 			Type operation = actual.getType();
 			next();
@@ -144,7 +148,7 @@ public class Parser {
 	
 	private Expr add(Scope scope) throws ParserException, IOException, TokenizerException {
 		Expr expr = mult(scope);
-		next(); //no next
+		
 		while(isType(Type.PLUS) | isType(Type.MINUS)) {
 			Type operation = actual.getType();
 			next();
@@ -155,7 +159,7 @@ public class Parser {
 	
 	private Expr mult(Scope scope) throws ParserException, IOException, TokenizerException {
 		Expr expr = unary(scope);
-		next(); //no next
+		
 		while(isType(Type.STAR) | isType(Type.SLASH) | isType(Type.MOD)) {
 			Type operation = actual.getType();
 			next();
@@ -170,7 +174,7 @@ public class Parser {
 			next();
 			return new UnaryExpr(operation, unary(scope));
 		}else {
-			return postfix(scope); //TODO da rivedere
+			return postfix(scope);
 		}
 	}
 	
@@ -194,11 +198,12 @@ public class Parser {
 		list.add(sequence(scope));
 		
 		while(isType(Type.COMMA)) {
-			next();
 			list.add(sequence(scope));
+			next();
 		}
-		System.out.println("Controllo cparen, ho effettivamente: "+actual.getType()+" ;)");
+        
 		checkType(Type.CPAREN);
+		next();
 		return list;
 	}
 	
@@ -242,10 +247,10 @@ public class Parser {
     }
 
     private Expr getNil(Scope scope) {
-    	return new NilVal();
+    	return NilVal.nil;
     }
 
-    private Expr getString(Scope scope) { //probabile next dopo il ritorno ?
+    private Expr getString(Scope scope) {
     	return new StringVal(actual.getTextValue());
     }
 
@@ -300,8 +305,8 @@ public class Parser {
     	checkType(Type.OPAREN);
     	next();
     	Expr expr = sequence(scope);
-    	next();
-    	checkType(Type.OPAREN);
+    	
+    	checkType(Type.CPAREN);
     	return expr;
     }
 
@@ -310,6 +315,7 @@ public class Parser {
 	private void next() throws IOException, TokenizerException {
 		tokenizer.setPrev(actual);
 		actual = tokenizer.next();
+		System.out.println(actual);
 	}
 	
 	private void previus() {
@@ -345,7 +351,8 @@ public class Parser {
 	
 	private void checkType(Type t) throws ParserException {
 		if(!(actual.getType() == t))
-			throw new ParserException("ParserException: expected type: "+t.toString()+" not found");
+			throw new ParserException("ParserException: expected type: "+t.toString()+" not found, actual: "
+					+actual.getType()+" "+actual.getValue()+" "+actual.getTextValue());
 	}
 
 	private void checkEOS() throws ParserException {
