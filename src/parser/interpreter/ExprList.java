@@ -16,22 +16,27 @@ public class ExprList{
 	public void add(Expr expr) {
 		list.add(expr);
 	}
+	
+	public int size() {
+		return list.size();
+	}
+	
+	public Expr getAt(int index) {
+		if(index < size())
+			return list.get(index);
+		else
+			return null;
+	}
 
 	//TODO rivedere con uno stream
 	public List<Val> eval(Env env) throws InterpreterException{
-		/*return list.stream().map(expr -> {
+		return list.stream().map(expr-> {
 			try {
 				return expr.eval(env);
 			} catch (InterpreterException e) {
-				return NilVal.nil; 
+				return NilVal.nil;
 			}
-		}).collect(Collectors.toList());*/
-		ArrayList<Val> ret = new ArrayList<Val>();
-		
-		for(Expr e : list)
-			ret.add(e.eval(env));
-		
-		return ret;
+		}).collect(Collectors.toList());
 	}
 
 }

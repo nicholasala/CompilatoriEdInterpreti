@@ -27,6 +27,7 @@ public class Scope {
 	}
 	
 	public void checkId(Token t) throws ParserException {
+		System.out.println("\nCheck "+t+" token in "+ids+"\n");
 		if(!ids.contains(t.getTextValue()))
 			throw new ParserException("ParserException: expected var: "+t.getTextValue()+" not declared");
 	}

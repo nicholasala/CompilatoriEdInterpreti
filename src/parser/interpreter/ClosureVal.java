@@ -13,13 +13,13 @@ public class ClosureVal extends Val{
 		this.funExpr = funExpr;
 	}
 	
-	Val apply(List<Val> argVals) throws InterpreterException {
+	public Val apply(List<Val> argVals) throws InterpreterException {
         return funExpr.code().eval(
             new Env(new Frame(funExpr.params(), funExpr.locals(), argVals), env));
     }
 	
 	@Override
-	protected ClosureVal checkClosure() throws InterpreterException{
-		throw new InterpreterException(this + " Is not a Closure");
+	public ClosureVal checkClosure() throws InterpreterException{
+		return this;
 	}
 }

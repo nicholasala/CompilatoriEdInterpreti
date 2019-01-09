@@ -6,12 +6,6 @@ import java.util.ArrayList;
 
 import exception.TokenizerException;
 
-/*
- * TODO 
- * - Introdurre gestione variabili: average viene visto come unknow, e anche le variabili nelle lambda
- * 
-*/
-
 public class Tokenizer
 {
 	public static ArrayList<Type> keyWord = new ArrayList<Type>();

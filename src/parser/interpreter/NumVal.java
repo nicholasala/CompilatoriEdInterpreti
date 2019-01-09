@@ -1,15 +1,17 @@
 package parser.interpreter;
 
+import java.math.BigDecimal;
+
 import exception.InterpreterException;
 
 public class NumVal extends Val{
-	private final int value;
+	private final BigDecimal value;
 	
-	NumVal(int value){
+	NumVal(BigDecimal value){
 		this.value = value;
 	}
 	
-	public int getValue() {
+	public BigDecimal getValue() {
 		return value;
 	}
 	
@@ -17,6 +19,32 @@ public class NumVal extends Val{
 	protected NumVal checkNum() throws InterpreterException{
 		return this;
 	}
+	
+	@Override
+	public Val plus(Val rVal) throws InterpreterException {
+		return new NumVal(value.add(rVal.checkNum().getValue()));
+	}
+
+	@Override
+	public Val minus(Val rVal) throws InterpreterException {
+		return new NumVal(value.subtract(rVal.checkNum().getValue()));
+	}
+
+	@Override
+	public Val times(Val rVal) throws InterpreterException {
+		return new NumVal(value.multiply(rVal.checkNum().getValue()));
+	}
+
+	@Override
+	public Val division(Val rVal) throws InterpreterException {
+		return new NumVal(value.divide(rVal.checkNum().getValue()));
+	}
+
+	@Override
+	public Val module(Val rVal) throws InterpreterException {
+		return new NumVal(value.remainder(rVal.checkNum().getValue()));
+	}
+
 	
 	@Override
 	public String toString() {

@@ -27,9 +27,9 @@ public class Token
         return type;
     }
 
-    public int getValue()
+    public BigDecimal getValue()
     {
-        return value.intValue();
+        return value;
     }
 
     public String getTextValue() {

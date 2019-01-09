@@ -15,7 +15,7 @@ public class PrintExpr extends Expr{
 	@Override
 	public Val eval(Env env) throws InterpreterException {
 		for(Val v : args.eval(env))
-			System.out.print(v.toString());
+			System.out.print(v.eval(env).toString());
 		
 		if(operator == Type.PRINTLN)
 			System.out.print(System.lineSeparator());

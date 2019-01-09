@@ -1,8 +1,10 @@
 package parser.interpreter;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import tokenizer.*;
 import exception.*;
@@ -11,11 +13,12 @@ public class Parser {
 	private Tokenizer tokenizer;
 	private Token actual = null;
 	
-	public Parser(StringReader reader) throws IOException{
+	public Parser(Reader reader) throws IOException{
 		tokenizer = new Tokenizer(reader);
 	}
 	
 	public Expr program() throws ParserException, IOException, TokenizerException {
+		next();
 		Expr ret = function(new Scope());
 		next();
 		checkEOS();
@@ -23,8 +26,6 @@ public class Parser {
 	}
 
 	private Expr function(Scope scope) throws ParserException, IOException, TokenizerException {
-		next();
-		
 		checkType(Type.OBRACES);
 		next();
 		scope = new Scope(optParams(scope), optLocals(scope));
@@ -70,23 +71,30 @@ public class Parser {
 	}
 	
 	private Expr sequence(Scope scope) throws IOException, TokenizerException, ParserException {
-		Expr expr = optAssignment(scope);
+		//sequence ::= optAssignment ( ";" optAssignment )* .
+		List<Expr> exprList = new ArrayList<>();
+		exprList.add(optAssignment(scope));
 		
 		while(isType(Type.SEMICOLON)) {
 			next();
-			expr = new SeqExpr(expr, optAssignment(scope));	
+			exprList.add(optAssignment(scope));
 		}
 		
 		if(actual.getType() != Type.CBRACES)
 			next();
-		return expr;
+		
+		if(exprList.size() == 0)
+			return NilVal.nil;
+		else if(exprList.size() == 1)
+			return exprList.get(0);
+		else
+			return new SeqExpr(exprList);
 	}
 	
 	private Expr optAssignment(Scope scope) throws ParserException, IOException, TokenizerException {
-		return isInFirstOfAssignment() ? assignment(scope) : null;
+		return isInFirstOfAssignment() ? assignment(scope) : NilVal.nil;
 	}		
 
-	//nel caso di una subsequence, ci ritroviamo al check nello scope senza aver prima aggiunto le variabili allo scope
 	private Expr assignment(Scope scope) throws ParserException, IOException, TokenizerException {
 		if(isType(Type.ID)) {
 			scope.checkId(actual);
@@ -198,8 +206,8 @@ public class Parser {
 		list.add(sequence(scope));
 		
 		while(isType(Type.COMMA)) {
-			list.add(sequence(scope));
 			next();
+			list.add(sequence(scope));
 		}
         
 		checkType(Type.CPAREN);
@@ -232,6 +240,7 @@ public class Parser {
 			case OPAREN:
 				return function(scope);
 			case OBRACES:
+				next();
 				return getSubSequence(scope);
 			default:
 				throw new ParserException("ParserException: error in primary");
@@ -300,13 +309,15 @@ public class Parser {
     	return new PrintExpr(operator, exprList);
     }
 
+    //BACO NOTO CON SUBSEQUENCE, aperta graffa non viene riconosciuta da function perchè quando entriamo in subsequence
+    //siamo già sulla aperta tonda
     private Expr getSubSequence(Scope scope) throws ParserException, IOException, TokenizerException {
+    	//subsequence ::= "(" sequence ")" .
+    	checkType(Type.OPAREN);
+    	//next();
+    	Expr expr = sequence(scope);
     	next();
     	checkType(Type.OPAREN);
-    	next();
-    	Expr expr = sequence(scope);
-    	
-    	checkType(Type.CPAREN);
     	return expr;
     }
 

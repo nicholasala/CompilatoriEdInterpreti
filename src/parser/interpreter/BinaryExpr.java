@@ -16,31 +16,34 @@ public class BinaryExpr extends Expr{
 
 	@Override
 	public Val eval(Env env) throws InterpreterException {
+		Val lVal = first.eval(env);
+		Val rVal = second.eval(env);
+		
 		switch(operation) {
-			case EQEQ:
-				break;
+			/*case EQEQ:
+				
 			case NOTEQ:
-				break;
+				
 			case LEFTTAG:
-				break;
+				
 			case LEFTEQUALSTAG:
 				break;
 			case RIGHTTAG:
 				break;
 			case RIGHTEQUALSTAG:
-				break;
+				break;*/
 			case PLUS:
-				break;
+				return lVal.plus(rVal);
 			case MINUS:
-				break;
+				return lVal.minus(rVal);
 			case STAR:
-				break;
+				return lVal.times(rVal);
 			case SLASH:
-				break;
+				return lVal.division(rVal);
 			case MOD:
-				break;
+				return lVal.module(rVal);
 		}
 		
-		return null;
+		return NilVal.nil;
 	}
 }

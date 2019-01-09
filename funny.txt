@@ -7,16 +7,16 @@
 
 
 
-/*
+
 { ->
-	print("Hello", "world!\n");
-	print("Hi!", "\n");
-	println("你好");
+	print(1+2);
+	//print("Hello", "world!\n");
+	//println("Hi!", "\n");
+	//print("你好");
 }
-*/
 
 
-
+/*
 {_true _false _if ->
     _true = {(t f) -> t};
     _false = {(t f) -> f};
@@ -25,7 +25,7 @@
     print("ci", "siamo");
     println(_if(_true, {-> while true do {} od}, {-> "False"}))
 }
-
+*/
 
 
 /*
