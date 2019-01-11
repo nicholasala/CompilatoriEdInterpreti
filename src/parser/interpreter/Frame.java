@@ -28,6 +28,7 @@ public class Frame {
 		if(bindings.keySet().contains(id)) {
 			bindings.remove(id);
 			bindings.put(id, value);
+			return;
 		}
 			
 		throw new InterpreterException("ID "+id+" not found");

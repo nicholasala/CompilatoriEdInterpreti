@@ -19,7 +19,7 @@ public class Parser {
 	
 	public Expr program() throws ParserException, IOException, TokenizerException {
 		next();
-		Expr ret = function(new Scope());
+		Expr ret = function(null);
 		next();
 		checkEOS();
 		return ret;
@@ -28,11 +28,18 @@ public class Parser {
 	private Expr function(Scope scope) throws ParserException, IOException, TokenizerException {
 		checkType(Type.OBRACES);
 		next();
-		scope = new Scope(optParams(scope), optLocals(scope));
+		
+		ArrayList<String> optParams = optParams(scope);
+		ArrayList<String> optLocals = optLocals(scope);
+		ArrayList<String> temps = new ArrayList<String>();
+		temps.addAll(optParams);
+		temps.addAll(optLocals);
+		scope = new Scope(temps, scope);
 		Expr expr = optSequence(scope);
 		
 		checkType(Type.CBRACES);
-		return expr;
+		next();
+		return new FunExpr(optParams, optLocals, expr);
 	}
 
 	private ArrayList<String> optParams(Scope scope) throws ParserException, IOException, TokenizerException {
@@ -41,8 +48,7 @@ public class Parser {
 			next();
 			ids.addAll(optIds(scope));
 			checkType(Type.CPAREN);
-		}else {
-			ids.addAll(optIds(scope));
+			next();
 		}
 		return ids;
 	}
@@ -80,8 +86,8 @@ public class Parser {
 			exprList.add(optAssignment(scope));
 		}
 		
-		if(actual.getType() != Type.CBRACES)
-			next();
+		//if(actual.getType() != Type.CBRACES)
+			//next();
 		
 		if(exprList.size() == 0)
 			return NilVal.nil;
@@ -200,8 +206,10 @@ public class Parser {
 		checkType(Type.OPAREN);
 		next();
 		
-		if(isType(Type.CPAREN))
+		if(isType(Type.CPAREN)) {
+			next();
 			return list;
+		}
 		
 		list.add(sequence(scope));
 		
@@ -238,34 +246,42 @@ public class Parser {
 			case PRINTLN:
 				return getPrint(scope);
 			case OPAREN:
-				return function(scope);
-			case OBRACES:
-				next();
 				return getSubSequence(scope);
+			case OBRACES:
+				return function(scope);
 			default:
 				throw new ParserException("ParserException: error in primary");
 		}
 	}
 	
-	private Expr getNumber(Scope scope) {
-		return new NumVal(actual.getValue());
+	private Expr getNumber(Scope scope) throws IOException, TokenizerException {
+		NumVal nVal = new NumVal(actual.getValue());
+		next();
+		return nVal;
     }
 
-    private Expr getBoolean(Scope scope) throws ParserException {
-    	return new BoolVal(actual.getType());
+    private Expr getBoolean(Scope scope) throws ParserException, IOException, TokenizerException {
+    	BoolVal bVal = new BoolVal(actual.getType());
+    	next();
+    	return bVal;
     }
 
-    private Expr getNil(Scope scope) {
+    private Expr getNil(Scope scope) throws IOException, TokenizerException {
+    	next();
     	return NilVal.nil;
     }
 
-    private Expr getString(Scope scope) {
-    	return new StringVal(actual.getTextValue());
+    private Expr getString(Scope scope) throws IOException, TokenizerException {
+    	StringVal sVal = new StringVal(actual.getTextValue());
+    	next();
+    	return sVal;
     }
 
-    private Expr getId(Scope scope) throws ParserException {
+    private Expr getId(Scope scope) throws ParserException, IOException, TokenizerException {
     	scope.checkId(actual);
-    	return new GetVarExpr(actual.getTextValue());
+    	GetVarExpr getVarExpr = new GetVarExpr(actual.getTextValue());
+    	next();
+		return getVarExpr;
     }
 
     private Expr getIf(Scope scope) throws ParserException, IOException, TokenizerException {
@@ -278,12 +294,14 @@ public class Parser {
     	next();
     	first = sequence(scope);
     	next();
+    	
     	if(isType(Type.ELSE)) {
     		next();
     		second = sequence(scope);
     	}
-    	next();
+    	
     	checkType(Type.FI);
+    	next();
     	return new IfExpr(condition, operator, first, second);
     }
 
@@ -292,13 +310,14 @@ public class Parser {
     	Type operator = actual.getType();
     	next();
     	Expr condition = sequence(scope);
-    	next();
+    	
     	if(isType(Type.DO)) {
     		next();
     		operation = sequence(scope);
     	}
-    	next();
+    	
     	checkType(Type.OD);
+    	next();
     	return new WhileExpr(operator, condition, operation);
     }
 
@@ -309,15 +328,13 @@ public class Parser {
     	return new PrintExpr(operator, exprList);
     }
 
-    //BACO NOTO CON SUBSEQUENCE, aperta graffa non viene riconosciuta da function perchè quando entriamo in subsequence
-    //siamo già sulla aperta tonda
     private Expr getSubSequence(Scope scope) throws ParserException, IOException, TokenizerException {
     	//subsequence ::= "(" sequence ")" .
     	checkType(Type.OPAREN);
-    	//next();
-    	Expr expr = sequence(scope);
     	next();
-    	checkType(Type.OPAREN);
+    	Expr expr = sequence(scope);
+    	checkType(Type.CPAREN);
+    	next();
     	return expr;
     }
 

@@ -3,6 +3,7 @@ package main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 
 import exception.InterpreterException;
@@ -14,6 +15,9 @@ import parser.interpreter.ExprList;
 import parser.interpreter.InvokeExpr;
 import parser.interpreter.Parser;
 import parser.interpreter.Val;
+import tokenizer.Token;
+import tokenizer.Tokenizer;
+import tokenizer.Type;
 
 public class Main {
 	//Prima si impara a non ruttare a tavola e poi si puo anche ruttare
@@ -21,7 +25,7 @@ public class Main {
 		
 	    BufferedReader reader = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/funny.txt"));
 		
-	    /*Tokenizer t = new Tokenizer(new StringReader(new String(data)));
+	    /*Tokenizer t = new Tokenizer(reader);
 		Token temp;
 		do {
 			temp = t.next();
@@ -30,7 +34,7 @@ public class Main {
 			
 		Parser parser = new Parser(reader);
 		Expr program = parser.program();
-		System.out.println("Programma: \n\n");
+		System.out.println("Programma:\n\n");
 	    program.eval(null).checkClosure().apply(new ArrayList<>());
 	}
 }

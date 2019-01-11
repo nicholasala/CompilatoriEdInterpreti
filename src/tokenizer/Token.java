@@ -8,6 +8,7 @@ public class Token
     private BigDecimal value;
     private String textValue;
 
+    //TODO costruttore passando BigDecimal e non int
     public Token(int value, Type type)
     {
         this.value=new BigDecimal(value);

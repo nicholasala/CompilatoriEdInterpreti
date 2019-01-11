@@ -25,7 +25,7 @@ public class Tokenizer
 			}else { break; }
 		} 
 	}
-	
+	//TODO println(_if("va bene")); seconda parentesi aperta non riconosciuta
     public Token next() throws IOException, TokenizerException {
     	if(actual == null) {
     		skip();
@@ -194,17 +194,19 @@ public class Tokenizer
     
     //get variable
     private Token getVariable() throws IOException {
-    	StringBuilder sb = new StringBuilder("");
+    	StringBuilder sb = new StringBuilder();
     	
     	do {
     		sb.append((char)c);
-    		c = reader.read();
+    		markAndRead();
     	}while(Character.isLetter(c) || c == '_');
     	
+    	reader.reset();
     	return new Token(sb.toString(), Type.ID);
     }
     
     //get digits
+    //TODO salvare direttamente in BigDecimal e usare il costruttore di Token con BigDecimal  
     private Token getDigit() throws IOException {
     	int num = 0;
 		

@@ -6,29 +6,20 @@ import exception.ParserException;
 import tokenizer.Token;
 
 public class Scope {
-	private ArrayList<String> ids;
-	
-	Scope(){
-		ids = new ArrayList<String>();
-	}
-	
-	Scope(ArrayList<String> ids){
-		this.ids = ids;
-	}
+	private final ArrayList<String> ids;
+	private final Scope enclosing;
 	
 	Scope(ArrayList<String> ids, Scope additionalScope){
 		this.ids = ids;
-		this.ids.addAll(additionalScope.ids);
-	}
-	
-	Scope(ArrayList<String> first, ArrayList<String> second){
-		ids = first;
-		ids.addAll(second);
+		this.enclosing = additionalScope;
 	}
 	
 	public void checkId(Token t) throws ParserException {
-		System.out.println("\nCheck "+t+" token in "+ids+"\n");
-		if(!ids.contains(t.getTextValue()))
-			throw new ParserException("ParserException: expected var: "+t.getTextValue()+" not declared");
+		if(ids.contains(t.getTextValue()))
+			return;
+		if(enclosing!=null)
+			enclosing.checkId(t);
+		
+		throw new ParserException("ParserException: expected var: "+t.getTextValue()+" not declared");
 	}
 }
