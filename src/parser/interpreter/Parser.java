@@ -343,7 +343,6 @@ public class Parser {
 	private void next() throws IOException, TokenizerException {
 		tokenizer.setPrev(actual);
 		actual = tokenizer.next();
-		System.out.println(actual);
 	}
 	
 	private void previus() {

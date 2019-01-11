@@ -25,12 +25,14 @@ public class Tokenizer
 			}else { break; }
 		} 
 	}
-	//TODO println(_if("va bene")); seconda parentesi aperta non riconosciuta
+	
     public Token next() throws IOException, TokenizerException {
+    	//skip whitespaces and comments
+    	skip();
+    	
     	if(actual == null) {
-    		skip();
-            markAndRead();
-            
+			markAndRead(1);   
+    		
             switch((char)c) {
     	    	case ';':
     	    		return new Token(0, Type.SEMICOLON);
@@ -67,7 +69,7 @@ public class Tokenizer
     	    	case (char)-1:
     	    		return new Token(0, Type.EOS);
     	    	case '-':
-    	    		markAndRead();
+    	    		markAndRead(1);
     	    		if((char)c == '>') {
     	    			return new Token(0, Type.INDICATOR);
     	    		}else {
@@ -108,13 +110,18 @@ public class Tokenizer
     	
     	do {
     		previus = c;
-    		markAndRead();
-    		
+    		markAndRead(1);
+    			
     		if(c == '/' && previus == '/')
     			skipInlineComments();
     		else if(c == '*' && previus == '/')
     			skipMultiLineComments();
-    		
+    		else if(previus == '/') {
+    			actual = new Token(0, Type.SLASH);
+    			reader.reset();
+    			break;
+    		}
+    		    			
     	}while(Character.isWhitespace((char) c) || c == '/');
     	
     	reader.reset();
@@ -123,7 +130,7 @@ public class Tokenizer
 	//skip inline comments
 	private void skipInlineComments() throws IOException {
 		while(c != '\n') {  
-			markAndRead();
+			markAndRead(1);
 		}
 	}
 	
@@ -133,7 +140,7 @@ public class Tokenizer
     	
     	do {
     		previus = c;
-    		markAndRead();
+    		markAndRead(1);
     		
     		if(c == '*' && previus == '/')
     			skipMultiLineComments(); 
@@ -141,17 +148,18 @@ public class Tokenizer
     	}while(!(c == '/' && previus == '*') && c != -1);
     	
     	checkEOS("Comment not closed");
+    	markAndRead(1);
     }
     
     //mark and read
-    private void markAndRead() throws IOException {
-    	reader.mark(1);
+    private void markAndRead(int ahead) throws IOException {
+    	reader.mark(ahead);
         c = reader.read();
 	}
 
 	//return the correct Token with or without passed char
     private Token getTokenWith(char compared, Type a, Type b) throws IOException {
-		markAndRead();
+		markAndRead(1);
 		if((char)c == compared) {
 			return new Token(0, a);
 		}else {
@@ -198,7 +206,7 @@ public class Tokenizer
     	
     	do {
     		sb.append((char)c);
-    		markAndRead();
+    		markAndRead(1);
     	}while(Character.isLetter(c) || c == '_');
     	
     	reader.reset();

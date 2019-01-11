@@ -34,11 +34,7 @@ public class Main {
 			
 		Parser parser = new Parser(reader);
 		Expr program = parser.program();
-		System.out.println("Programma:\n\n");
+		
 	    program.eval(null).checkClosure().apply(new ArrayList<>());
 	}
 }
-
-//creare una classe launcher che chiama l'invoke senza argomenti (invoke expr)
-//tutti i compilatori utilizzano indici, invece che un hash map chiave valore, potremo utilizzare
-//un array

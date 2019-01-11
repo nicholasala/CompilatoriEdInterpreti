@@ -1,23 +1,14 @@
 
 /*
 { ->
-	print("ci siamo");
-}
-*/
-
-
-
-/*
-{ ->
-	//print(1182732 - 78);
+	print(6 / 2);
 	print("Hello", "world!\n");
 	println("Hi!", "\n");
 	print("你好");
 }
 */
 
-
-
+/*
 {_true _false _if ->
     _true = {(t f) -> t};
     _false = {(t f) -> f};
@@ -26,10 +17,10 @@
     print("ci", "siamo");
     println(_if(_false , {-> while true do {} od}, {-> "False"}))
 }
+*/
 
 
 
-/*
 {average sqr abs sqrt x ->
     average = {(x y) -> (x + y) / 2};
     sqr = {(x) -> x * x};
@@ -48,7 +39,7 @@
     x = 16;
     println("sqrt(", x, "): ", sqrt(x));
 }
-*/
+
 
 
 
