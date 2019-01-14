@@ -3,6 +3,7 @@ package parser.interpreter;
 import java.math.BigDecimal;
 
 import exception.InterpreterException;
+import tokenizer.Type;
 
 public class NumVal extends Val{
 	private final BigDecimal value;
@@ -44,7 +45,54 @@ public class NumVal extends Val{
 	public Val module(Val rVal) throws InterpreterException {
 		return new NumVal(value.remainder(rVal.checkNum().getValue()));
 	}
-
+	
+	@Override
+	public Val equal(Val rVal) throws InterpreterException {
+		if(value.equals(rVal.checkNum().getValue()))
+			return new BoolVal(Type.TRUE);
+		else
+			return new BoolVal(Type.FALSE);
+	}
+	
+	@Override
+	public Val notEqual(Val rVal) throws InterpreterException {
+		if(!value.equals(rVal.checkNum().getValue()))
+			return new BoolVal(Type.TRUE);
+		else
+			return new BoolVal(Type.FALSE);
+	}
+	
+	@Override
+	public Val lower(Val rVal) throws InterpreterException{
+		if(value.compareTo(rVal.checkNum().getValue()) == -1)
+			return new BoolVal(Type.TRUE);
+		else
+			return new BoolVal(Type.FALSE);
+	}
+	
+	@Override
+	public Val lowerEqual(Val rVal) throws InterpreterException{
+		if(value.compareTo(rVal.checkNum().getValue()) <= 0)
+			return new BoolVal(Type.TRUE);
+		else
+			return new BoolVal(Type.FALSE);
+	}
+	
+	@Override
+	public Val greater(Val rVal) throws InterpreterException{
+		if(value.compareTo(rVal.checkNum().getValue()) == 1)
+			return new BoolVal(Type.TRUE);
+		else
+			return new BoolVal(Type.FALSE);
+	}
+	
+	@Override
+	public Val greaterEqual(Val rVal) throws InterpreterException{
+		if(value.compareTo(rVal.checkNum().getValue()) >= 0)
+			return new BoolVal(Type.TRUE);
+		else
+			return new BoolVal(Type.FALSE);
+	}
 	
 	@Override
 	public String toString() {

@@ -20,18 +20,18 @@ public class BinaryExpr extends Expr{
 		Val rVal = second.eval(env);
 		
 		switch(operation) {
-			/*case EQEQ:
-				
+			case EQEQ:
+				return lVal.equal(rVal);
 			case NOTEQ:
-				
+				return lVal.notEqual(rVal);
 			case LEFTTAG:
-				
+				return lVal.lower(rVal);
 			case LEFTEQUALSTAG:
-				break;
+				return lVal.lowerEqual(rVal);
 			case RIGHTTAG:
-				break;
+				return lVal.greater(rVal);
 			case RIGHTEQUALSTAG:
-				break;*/
+				return lVal.greaterEqual(rVal);
 			case PLUS:
 				return lVal.plus(rVal);
 			case MINUS:

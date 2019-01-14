@@ -9,9 +9,16 @@ public class Token
     private String textValue;
 
     //TODO costruttore passando BigDecimal e non int
+    public Token(BigDecimal value, Type type)
+    {
+        this.value=value;
+        this.type=type;
+        this.textValue="";
+    }
+    
     public Token(int value, Type type)
     {
-        this.value=new BigDecimal(value);
+        this.value= new BigDecimal(value);
         this.type=type;
         this.textValue="";
     }

@@ -47,4 +47,28 @@ public class Val extends Expr{
 	public Val module(Val rVal) throws InterpreterException{
 		throw new InterpreterException("Module not allowed on "+this);
 	}
+	
+	public Val equal(Val rVal) throws InterpreterException{
+		throw new InterpreterException("Equal not allowed on "+this);
+	}
+	
+	public Val notEqual(Val rVal) throws InterpreterException{
+		throw new InterpreterException("NotEqual not allowed on "+this);
+	}
+	
+	public Val lower(Val rVal) throws InterpreterException{
+		throw new InterpreterException("lower not allowed on "+this);
+	}
+	
+	public Val lowerEqual(Val rVal) throws InterpreterException{
+		throw new InterpreterException("lowerEqual not allowed on "+this);
+	}
+	
+	public Val greater(Val rVal) throws InterpreterException{
+		throw new InterpreterException("greater not allowed on "+this);
+	}
+	
+	public Val greaterEqual(Val rVal) throws InterpreterException{
+		throw new InterpreterException("greaterEqual not allowed on "+this);
+	}
 }

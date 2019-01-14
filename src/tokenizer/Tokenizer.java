@@ -2,6 +2,7 @@ package tokenizer;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import exception.TokenizerException;
@@ -72,7 +73,10 @@ public class Tokenizer
     	    		markAndRead(1);
     	    		if((char)c == '>') {
     	    			return new Token(0, Type.INDICATOR);
-    	    		}else {
+    	    		}else if(Character.isDigit(c)) {
+    	    			reader.reset();
+    	    			return getDigit(false);
+    	    		}else{
     	    			reader.reset();
     	    			return getTokenWith('=', Type.MINUSEQUALS, Type.MINUS);
     	    		}
@@ -80,7 +84,7 @@ public class Tokenizer
     	    		if(Character.isLetter((char)c)) {
     	    			return getKeyWordOrVar();
     	    		}else if(Character.isDigit(c)) {
-    	    			return getDigit();
+    	    			return getDigit(true);
     	    		}else {
     	    			return new Token(0, Type.UNKNOW);
     	    		}
@@ -215,17 +219,31 @@ public class Tokenizer
     
     //get digits
     //TODO salvare direttamente in BigDecimal e usare il costruttore di Token con BigDecimal  
-    private Token getDigit() throws IOException {
-    	int num = 0;
+    private Token getDigit(boolean isPositive) throws IOException {
+    	double num = 0;
 		
 		while(Character.isDigit(c)) {
-			reader.mark(1);
 			num *= 10;
 			num += Character.getNumericValue((char)c);
-			c = reader.read();
+			markAndRead(1);
+			
+			if(c == 'e') {
+				markAndRead(1);
+				if(c != '-') {
+					num = Math.pow(num, getDigit(true).getValue().doubleValue());
+				}else {
+					c = reader.read();
+					num = Math.pow(num, getDigit(false).getValue().doubleValue());
+				}
+				break;
+			}
 		}
 		reader.reset();
-		return new Token(num, Type.NUM);
+		
+		if(!isPositive)
+			num = -num;
+		
+		return new Token(new BigDecimal(num), Type.NUM);
   	}
     
     //throw TokenizerException when reach the end of stream

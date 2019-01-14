@@ -289,12 +289,11 @@ public class Parser {
     	Type operator = actual.getType();
     	next();
     	Expr condition = sequence(scope);
-    	next();
+    	
     	checkType(Type.THEN);
     	next();
     	first = sequence(scope);
-    	next();
-    	
+    
     	if(isType(Type.ELSE)) {
     		next();
     		second = sequence(scope);
@@ -343,6 +342,7 @@ public class Parser {
 	private void next() throws IOException, TokenizerException {
 		tokenizer.setPrev(actual);
 		actual = tokenizer.next();
+		System.out.println(actual);
 	}
 	
 	private void previus() {

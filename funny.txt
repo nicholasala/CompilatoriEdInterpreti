@@ -25,7 +25,7 @@
     average = {(x y) -> (x + y) / 2};
     sqr = {(x) -> x * x};
     abs = {(x) -> if x >= 0 then x else -x fi};
-    sqrt = {(x) tolerance isGoodEnough improve sqrtIter ->
+   /* sqrt = {(x) tolerance isGoodEnough improve sqrtIter ->
         tolerance = 1e-30;
         
         isGoodEnough = {(guess) -> abs(sqr(guess) - x) < tolerance};
@@ -36,8 +36,9 @@
         sqrtIter(1)
     };
 
-    x = 16;
-    println("sqrt(", x, "): ", sqrt(x));
+    x = 16;*/
+    //println("sqrt(", x, "): ", sqrt(x));
+    println("abs(-123): ", abs(-123));
 }
 
 
@@ -80,8 +81,8 @@
     };
     
     println(change(50, 0))
-}*/
-
+}
+*/
 
 
 
