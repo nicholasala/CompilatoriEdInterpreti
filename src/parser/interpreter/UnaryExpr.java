@@ -1,5 +1,6 @@
 package parser.interpreter;
 
+import exception.InterpreterException;
 import tokenizer.Type;
 
 public class UnaryExpr extends Expr{
@@ -12,10 +13,17 @@ public class UnaryExpr extends Expr{
 	}
 
 	@Override
-	public Val eval(Env env) {
-		//Type.PLUS
-		//Type.MINUS
-		//Type.EXCLAMATION
+	public Val eval(Env env) throws InterpreterException {
+		Val value = expr.eval(env);
+		
+		switch(operation) {
+			case PLUS:
+				return value;
+			case MINUS:
+				return value.minus();
+			case EXCLAMATION:
+				return value.not();
+		}
 		return null;
 	}
 }

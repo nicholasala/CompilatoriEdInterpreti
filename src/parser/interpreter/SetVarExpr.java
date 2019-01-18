@@ -10,10 +10,12 @@ public class SetVarExpr extends Expr{
 		this.id = id;
 		this.expr = expr;
 	}
-
+	//shift + alt (con cursore nella zone dalla quale estrarre la variabile)
+	//shift + alt + l
 	@Override
 	public Val eval(Env env) throws InterpreterException {
-		env.setValue(id, expr.eval(env));
-		return NilVal.nil;
+		Val val = expr.eval(env);
+		env.setValue(id, val);
+		return val;
 	}
 }

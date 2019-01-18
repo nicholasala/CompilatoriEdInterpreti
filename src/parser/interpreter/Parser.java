@@ -107,8 +107,25 @@ public class Parser {
 			String id = actual.getTextValue();
 			next();
 			if(isAssignmentOperator()) {
+				Type operator = actual.getType();
 				next();
-				return new SetVarExpr(id, assignment(scope));
+				
+				switch(operator) {
+				case EQUALS:
+					return new SetVarExpr(id, assignment(scope));
+				case PLUSEQUALS:
+					return new SetVarExpr(id, new BinaryExpr(new GetVarExpr(id), Type.PLUS, assignment(scope)));
+				case MINUSEQUALS:
+					return new SetVarExpr(id, new BinaryExpr(new GetVarExpr(id), Type.MINUS, assignment(scope)));
+				case STAREQUALS:
+					return new SetVarExpr(id, new BinaryExpr(new GetVarExpr(id), Type.STAR, assignment(scope)));
+				case SLASHEQUALS:
+					return new SetVarExpr(id, new BinaryExpr(new GetVarExpr(id), Type.SLASH, assignment(scope)));
+				case MODEQUALS:
+					return new SetVarExpr(id, new BinaryExpr(new GetVarExpr(id), Type.MOD, assignment(scope)));
+				default:
+					return NilVal.nil;
+				}
 			}else {
 				previus();
 				return logicalOr(scope);

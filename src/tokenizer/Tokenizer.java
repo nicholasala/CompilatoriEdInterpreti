@@ -54,7 +54,7 @@ public class Tokenizer
     	    	case '*':
     	    		return getTokenWith('=', Type.STAREQUALS, Type.STAR);
     	    	case '/':
-    	    		return getTokenWith('=', Type.SLASHEQUALS, Type.SLASH);
+    	    		return getTokenWith('=', Type.SLASHEQUALS, Type.SLASH);//TODO risolvere, torna solo slash
     	    	case '%':
     	    		return getTokenWith('=', Type.MODEQUALS, Type.MOD);
     	    	case '<':
@@ -63,6 +63,10 @@ public class Tokenizer
     	    		return getTokenWith('=', Type.RIGHTEQUALSTAG, Type.RIGHTTAG);
     	    	case '=':
     	    		return getTokenWith('=', Type.EQEQ, Type.EQUALS);
+    	    	case '|':
+    	    		return getTokenWith('|', Type.OR, Type.UNKNOW);
+    	    	case '&':
+    	    		return getTokenWith('&', Type.AND, Type.UNKNOW);
     	    	case '"':
     	    		return getString();
     	    	case '_':
@@ -74,7 +78,6 @@ public class Tokenizer
     	    		if((char)c == '>') {
     	    			return new Token(0, Type.INDICATOR);
     	    		}else if(Character.isDigit(c)) {
-    	    			reader.reset();
     	    			return getDigit(false);
     	    		}else{
     	    			reader.reset();
@@ -218,7 +221,6 @@ public class Tokenizer
     }
     
     //get digits
-    //TODO salvare direttamente in BigDecimal e usare il costruttore di Token con BigDecimal  
     private Token getDigit(boolean isPositive) throws IOException {
     	double num = 0;
 		
@@ -236,6 +238,12 @@ public class Tokenizer
 					num = Math.pow(num, getDigit(false).getValue().doubleValue());
 				}
 				break;
+			}if(c == '.') {
+				//TODO: gestire parte numerica dopo la virgola
+				markAndRead(1);
+				while(Character.isDigit(c)) {
+					
+				}
 			}
 		}
 		reader.reset();

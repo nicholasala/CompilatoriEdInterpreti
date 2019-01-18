@@ -19,13 +19,21 @@
 }
 */
 
+//TODO il '/' subito dopo l'uno di questo caso, va gestito
+/*
+{x ->
+   x = 0;
+   if x != 0 && 1 / x != 0 then println("Ok") else println("Ko") fi
+}
+*/
 
-
-{average sqr abs sqrt x ->
+/*
+{average sqr abs sqrt x magTen ->
     average = {(x y) -> (x + y) / 2};
     sqr = {(x) -> x * x};
+    magTen = {(x) -> if x > 10 then println("maggiore ;)") else println("minore ;)") fi};
     abs = {(x) -> if x >= 0 then x else -x fi};
-   /* sqrt = {(x) tolerance isGoodEnough improve sqrtIter ->
+    sqrt = {(x) tolerance isGoodEnough improve sqrtIter ->
         tolerance = 1e-30;
         
         isGoodEnough = {(guess) -> abs(sqr(guess) - x) < tolerance};
@@ -36,12 +44,12 @@
         sqrtIter(1)
     };
 
-    x = 16;*/
-    //println("sqrt(", x, "): ", sqrt(x));
+    x = 16;
     println("abs(-123): ", abs(-123));
+    print()    
+    println("12 mag ten ? ", magTen(12));
 }
-
-
+*/
 
 
 /*
@@ -86,7 +94,8 @@
 
 
 
-/*{makeCounter myCounter yourCounter n ->
+/*
+{makeCounter myCounter yourCounter n ->
 
     makeCounter = {(balance) ->
         {(amount) -> balance += amount}
@@ -127,13 +136,14 @@
 {-> println({->} + "a")}
 */
 
-/*
+//eccezione
+
 {a sqr x ->
 
-	sqr = {(x) -> x * x};
+	/*sqr = {(x) -> x * x};
 	x = {(z) -> sqr};
 	
-	println(x(2)(3));
+	print(x(2)(3));
 
     println(10 / 3);
     println(20 / 3);
@@ -141,15 +151,15 @@
 	println({(x)->{() -> x}}(4)());
 	7(8);
 	
-    a = 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024;
+    a = 1024 * 1024; //1024; //* 1024 * 1024 * 1024 * 1024 * 1024 * 1024;
     println(a);
     println(1 / a);
     println(1 / a * a);
-    println(1 / a * a == 1);
+    println(1 / a * a == 1);*/
     
     println(3.27 % .7);
 }
-*/
+
 
 /*
 {fib ->
@@ -161,6 +171,7 @@
 }
 */
 
+//eccezione
 /*
 {fib ->
     fib = {(n) fib0 fib1 fib ->
@@ -177,8 +188,8 @@
     
     println(fib(10000))
 }
-*/
 
+*/
 
 
 

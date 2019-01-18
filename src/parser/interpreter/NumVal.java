@@ -95,6 +95,11 @@ public class NumVal extends Val{
 	}
 	
 	@Override
+	public Val minus() throws InterpreterException{
+		return new NumVal(this.getValue().negate());
+	}
+	
+	@Override
 	public String toString() {
 		return String.valueOf(value);
 	}

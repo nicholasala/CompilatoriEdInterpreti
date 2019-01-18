@@ -71,4 +71,12 @@ public class Val extends Expr{
 	public Val greaterEqual(Val rVal) throws InterpreterException{
 		throw new InterpreterException("greaterEqual not allowed on "+this);
 	}
+	
+	public Val minus() throws InterpreterException{
+		throw new InterpreterException("minus not allowed on "+this);
+	}
+	
+	public Val not() throws InterpreterException{
+		throw new InterpreterException("not not allowed on "+this);
+	}
 }

@@ -26,4 +26,9 @@ public class BoolVal extends Val{
 	public String toString() {
 		return String.valueOf(value);
 	}
+	
+	@Override
+	public Val not() throws InterpreterException{
+		return value ? new BoolVal(Type.FALSE) : new BoolVal(Type.TRUE);
+	}
 }
