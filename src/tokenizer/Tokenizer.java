@@ -116,9 +116,9 @@ public class Tokenizer
     	int previus;
     	
     	do {
-    		previus = c;
+    		previus = c;	
     		markAndRead(1);
-    			
+    		//System.err.print("Previus: "+(char)previus+ " actual: "+(char)c);
     		if(c == '/' && previus == '/')
     			skipInlineComments();
     		else if(c == '*' && previus == '/')
@@ -242,7 +242,7 @@ public class Tokenizer
 				//TODO: gestire parte numerica dopo la virgola
 				markAndRead(1);
 				while(Character.isDigit(c)) {
-					
+					markAndRead(1);
 				}
 			}
 		}

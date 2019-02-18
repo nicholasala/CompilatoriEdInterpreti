@@ -1,0 +1,23 @@
+blocks language (CFG)
+
+
+
+Productions (rules)
+-------------------
+
+Expr ::= VertExpr Eos .
+VertExpr ::= VertExpr "|" HorizExpr | HorizExpr .
+HorizExpr ::= HorizExpr "-" PrimaryExpr | PrimaryExpr .
+PrimaryExpr ::= ParenExpr | RectExpr .
+ParenExpr ::= "(" VertExpr ")" .
+RectExpr ::= Num "*" Num .
+
+
+
+Terminals (tokens)
+------------------
+
+Eos, Num, "|", "-", "*", ")", "("
+
+
+

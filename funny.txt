@@ -1,12 +1,6 @@
 
-/*
-{ ->
-	print(6 / 2);
-	print("Hello", "world!\n");
-	println("Hi!", "\n");
-	print("你好");
-}
-*/
+
+{->print(6/2);}
 
 /*
 {_true _false _if ->
@@ -137,29 +131,29 @@
 */
 
 //eccezione
-
+/*
 {a sqr x ->
 
-	/*sqr = {(x) -> x * x};
+	sqr = {(x) -> x * x};
 	x = {(z) -> sqr};
 	
-	print(x(2)(3));
+	println(x(2)(3));
 
-    println(10 / 3);
-    println(20 / 3);
+    println(10/2);
+    println(20 / 2);
     
 	println({(x)->{() -> x}}(4)());
 	7(8);
 	
-    a = 1024 * 1024; //1024; //* 1024 * 1024 * 1024 * 1024 * 1024 * 1024;
+    a = 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024;
     println(a);
     println(1 / a);
     println(1 / a * a);
-    println(1 / a * a == 1);*/
+    println(1 / a * a == 1);
     
     println(3.27 % .7);
 }
-
+*/
 
 /*
 {fib ->
