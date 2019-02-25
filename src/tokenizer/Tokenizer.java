@@ -28,8 +28,8 @@ public class Tokenizer
 	}
 	
     public Token next() throws IOException, TokenizerException {
-    	//skip whitespaces and comments
-    	skip();
+    	//skip whitespaces
+    	skipWhiteSpaces();
     	
     	if(actual == null) {
 			markAndRead(1);   
@@ -53,8 +53,6 @@ public class Tokenizer
     	    		return getTokenWith('=', Type.PLUSEQUALS, Type.PLUS);
     	    	case '*':
     	    		return getTokenWith('=', Type.STAREQUALS, Type.STAR);
-    	    	case '/':
-    	    		return getTokenWith('=', Type.SLASHEQUALS, Type.SLASH);//TODO risolvere, torna solo slash
     	    	case '%':
     	    		return getTokenWith('=', Type.MODEQUALS, Type.MOD);
     	    	case '<':
@@ -73,11 +71,24 @@ public class Tokenizer
     	    		return getVariable();
     	    	case (char)-1:
     	    		return new Token(0, Type.EOS);
+    	    	case '/':
+    	    		markAndRead(1);
+    	    		if((char)c == '/') {
+    	    			skipInlineComment();
+    	    			return next();
+    	    		}else if((char)c == '*') {
+    	    			skipMultiLineComment();
+    	    			return next();
+    	    		}else{
+    	    			reader.reset();
+    	    			return getTokenWith('=', Type.SLASHEQUALS, Type.SLASH);
+    	    		}
     	    	case '-':
     	    		markAndRead(1);
     	    		if((char)c == '>') {
     	    			return new Token(0, Type.INDICATOR);
     	    		}else if(Character.isDigit(c)) {
+    	    			reader.reset();
     	    			return getDigit(false);
     	    		}else{
     	    			reader.reset();
@@ -87,6 +98,7 @@ public class Tokenizer
     	    		if(Character.isLetter((char)c)) {
     	    			return getKeyWordOrVar();
     	    		}else if(Character.isDigit(c)) {
+    	    			reader.reset();
     	    			return getDigit(true);
     	    		}else {
     	    			return new Token(0, Type.UNKNOW);
@@ -111,38 +123,20 @@ public class Tokenizer
     
     public boolean isEOS() { return c == -1; }
 
-	//skip white spaces and comments
-    private void skip() throws IOException, TokenizerException {
-    	int previus;
-    	
-    	do {
-    		previus = c;	
-    		markAndRead(1);
-    		//System.err.print("Previus: "+(char)previus+ " actual: "+(char)c);
-    		if(c == '/' && previus == '/')
-    			skipInlineComments();
-    		else if(c == '*' && previus == '/')
-    			skipMultiLineComments();
-    		else if(previus == '/') {
-    			actual = new Token(0, Type.SLASH);
-    			reader.reset();
-    			break;
-    		}
-    		    			
-    	}while(Character.isWhitespace((char) c) || c == '/');
-    	
-    	reader.reset();
+	//skip white spaces
+    private void skipWhiteSpaces() throws IOException, TokenizerException {
+        while(Character.isWhitespace((char)markAndRead(1)) && c != -1);
+        reader.reset();
     }
 
 	//skip inline comments
-	private void skipInlineComments() throws IOException {
-		while(c != '\n') {  
+	private void skipInlineComment() throws IOException {
+		while(c != '\n') 
 			markAndRead(1);
-		}
 	}
 	
 	//skip multi line comments
-    private void skipMultiLineComments() throws IOException, TokenizerException {
+    private void skipMultiLineComment() throws IOException, TokenizerException {
     	int previus;
     	
     	do {
@@ -150,7 +144,7 @@ public class Tokenizer
     		markAndRead(1);
     		
     		if(c == '*' && previus == '/')
-    			skipMultiLineComments(); 
+    			skipMultiLineComment(); 
     		
     	}while(!(c == '/' && previus == '*') && c != -1);
     	
@@ -159,9 +153,10 @@ public class Tokenizer
     }
     
     //mark and read
-    private void markAndRead(int ahead) throws IOException {
+    private int markAndRead(int ahead) throws IOException {
     	reader.mark(ahead);
         c = reader.read();
+        return c;
 	}
 
 	//return the correct Token with or without passed char
@@ -177,10 +172,11 @@ public class Tokenizer
     
     //get string token
     private Token getString() throws IOException, TokenizerException {
-    	StringBuilder sb = new StringBuilder("");
-    	while((c = reader.read()) != '"'  && c != -1){
+    	StringBuilder sb = new StringBuilder();
+    	
+    	while((c = reader.read()) != '"'  && c != -1)
             sb.append((char)c);
-        }
+        
     	checkEOS("String not closed");
     	return new Token(sb.toString(), Type.STRING);
 	}
@@ -221,37 +217,39 @@ public class Tokenizer
     }
     
     //get digits
-    private Token getDigit(boolean isPositive) throws IOException {
-    	double num = 0;
+    private Token getDigit(boolean isPositive) throws IOException, TokenizerException {
+    	StringBuilder sb = new StringBuilder();
+    	BigDecimal ret;
 		
-		while(Character.isDigit(c)) {
-			num *= 10;
-			num += Character.getNumericValue((char)c);
-			markAndRead(1);
-			
-			if(c == 'e') {
-				markAndRead(1);
-				if(c != '-') {
-					num = Math.pow(num, getDigit(true).getValue().doubleValue());
-				}else {
-					c = reader.read();
-					num = Math.pow(num, getDigit(false).getValue().doubleValue());
-				}
-				break;
-			}if(c == '.') {
-				//TODO: gestire parte numerica dopo la virgola
-				markAndRead(1);
-				while(Character.isDigit(c)) {
-					markAndRead(1);
-				}
+		while(Character.isDigit((char)markAndRead(1)) || (char)c == 'e' || (char)c == '-' || (char)c == '.')
+			sb.append((char)c);
+		
+		reader.reset();
+		String[] split = sb.toString().split("e");
+		
+		//default case
+		if(split.length <= 1) {
+			ret = new BigDecimal(sb.toString());
+		}
+		//power case
+		else{
+			if(split.length == 2) {
+				ret = new BigDecimal(split[0]);
+				
+				if(split[1].toCharArray()[0] == '-')
+					ret = BigDecimal.ONE.divide(ret.pow(Integer.valueOf(split[1].substring(1, split[1].length()))));
+				else
+					ret = ret.pow(Integer.valueOf(split[1]));				
+			}else {
+				throw new TokenizerException("Not correct number format");
 			}
 		}
-		reader.reset();
 		
-		if(!isPositive)
-			num = -num;
-		
-		return new Token(new BigDecimal(num), Type.NUM);
+		try {
+			return isPositive ? new Token(ret, Type.NUM) : new Token(ret.negate(), Type.NUM);
+		}catch(Exception e) {
+			throw new TokenizerException("Not correct number format");
+		}
   	}
     
     //throw TokenizerException when reach the end of stream

@@ -2,7 +2,6 @@ package parser.interpreter;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -359,7 +358,6 @@ public class Parser {
 	private void next() throws IOException, TokenizerException {
 		tokenizer.setPrev(actual);
 		actual = tokenizer.next();
-		System.out.println(actual);
 	}
 	
 	private void previus() {

@@ -1,6 +1,19 @@
 
 
-{->print(6/2);}
+{x->
+	print("ci siamo ;)");
+	println(" ");
+	x = 10;
+	x /= 4e4;
+	x /= 4e-2;
+	x += -4e-2;
+	x += 4.2213;
+	x += -456.12;
+	print(x);
+	//i commenti funzionano
+}
+
+
 
 /*
 {_true _false _if ->
@@ -13,11 +26,11 @@
 }
 */
 
-//TODO il '/' subito dopo l'uno di questo caso, va gestito
+
 /*
 {x ->
    x = 0;
-   if x != 0 && 1 / x != 0 then println("Ok") else println("Ko") fi
+   if x != 0 && 1/x != 0 then println("Ok") else println("Ko") fi
 }
 */
 
@@ -25,7 +38,6 @@
 {average sqr abs sqrt x magTen ->
     average = {(x y) -> (x + y) / 2};
     sqr = {(x) -> x * x};
-    magTen = {(x) -> if x > 10 then println("maggiore ;)") else println("minore ;)") fi};
     abs = {(x) -> if x >= 0 then x else -x fi};
     sqrt = {(x) tolerance isGoodEnough improve sqrtIter ->
         tolerance = 1e-30;
@@ -40,10 +52,10 @@
 
     x = 16;
     println("abs(-123): ", abs(-123));
-    print()    
-    println("12 mag ten ? ", magTen(12));
+    print();
 }
 */
+
 
 
 /*
@@ -209,7 +221,7 @@
     tail = {(p) -> p({(h t) -> t})};
     
     tree = pair(1, pair(pair("two", 42), pair(true, nil)));
-    println(head(head(tail(tree))));
+    //println(head(head(tail(tree))));
 }
 */
 

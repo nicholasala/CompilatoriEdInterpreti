@@ -8,7 +8,6 @@ public class Token
     private BigDecimal value;
     private String textValue;
 
-    //TODO costruttore passando BigDecimal e non int
     public Token(BigDecimal value, Type type)
     {
         this.value=value;
@@ -46,6 +45,6 @@ public class Token
     
     @Override
     public String toString() {
-    	return "[ tipo: " + type.toString() + " , valore numerico: " + value.intValue() + " , valore testuale: " + getTextValue() + " ]";
+    	return "[ tipo: " + type.toString() + " , valore numerico: " + value + " , valore testuale: " + getTextValue() + " ]";
     }
 }
